@@ -20,7 +20,7 @@ if os.path.exists(archivo_excel):
     df_registros = pd.read_excel(archivo_excel)
 else:
     df_registros = pd.DataFrame(columns=[
-        'Cliente', 'Cédula', 'Celular', 'Correo',
+        'Cliente', 'Cédula *', 'Celular *', 'Correo',
         'Fecha', 'Cuotas', 'Cuotas pagadas', 'Cuota mensual',
         'Total pagado', 'Saldo restante',
         'Comisión socio', 'Ganancia neta', 'Total a pagar'
@@ -30,9 +30,9 @@ menu = st.sidebar.radio("Menú Principal", ["📋 Registro de Clientes", "💵 R
 
 if menu == "📋 Registro de Clientes":
     st.subheader("📝 Registrar nuevo préstamo")
-    cliente = st.text_input("Nombre del cliente")
-    cedula = st.text_input("Cédula")
-    celular = st.text_input("Celular")
+    cliente = st.text_input("Nombre del cliente *")
+    cedula = st.text_input("Cédula *")
+    celular = st.text_input("Celular *")
     correo = st.text_input("Correo")
     fecha = st.date_input("Fecha del préstamo", value=datetime.today())
     cuotas = st.selectbox("Número de cuotas", [1, 2, 3, 4])
@@ -41,8 +41,8 @@ if menu == "📋 Registro de Clientes":
         cuota_mensual = round(total_pagar / cuotas, 2)
         registro = {
             'Cliente': cliente,
-            'Cédula': cedula,
-            'Celular': celular,
+            'Cédula *': cedula,
+            'Celular *': celular,
             'Correo': correo,
             'Fecha': fecha.strftime("%Y-%m-%d"),
             'Cuotas': cuotas,
@@ -63,7 +63,7 @@ elif menu == "💵 Registro de Pagos":
     st.subheader("💵 Registrar pago de cuotas")
     if not df_registros.empty:
         cedula_pago = st.text_input("Buscar cliente por cédula")
-        cliente_df = df_registros[df_registros['Cédula'].astype(str) == cedula_pago]
+        cliente_df = df_registros[df_registros['Cédula *'].astype(str) == cedula_pago]
         if not cliente_df.empty:
             st.write(cliente_df[['Cliente', 'Cuotas', 'Cuotas pagadas', 'Cuota mensual', 'Saldo restante']])
             pago_opcion = st.radio("¿Cómo desea registrar el pago?", ["Por número de cuotas", "Por monto exacto"])
@@ -102,7 +102,7 @@ elif menu == "🔍 Consulta":
         filtro = st.text_input("Escriba nombre o cédula")
         if filtro:
             resultado = df_registros[df_registros['Cliente'].str.lower().str.contains(filtro.lower()) |
-                                     df_registros['Cédula'].astype(str).str.contains(filtro)]
+                                     df_registros['Cédula *'].astype(str).str.contains(filtro)]
             if not resultado.empty:
                 st.dataframe(resultado)
             else:
